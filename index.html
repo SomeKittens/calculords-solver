@@ -2,7 +2,7 @@
 <html ng-app="calc">
 <head>
   <title>Calculords Haaax</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="bootstrap.min.css" crossorigin="anonymous">
   <style type="text/css">
   .loading img {
     margin: auto;
@@ -37,9 +37,11 @@
     <div class="row">
       <h3>Results</h3>
       <div ng-if="g.loading">
-        {{ g.percent | number }}% done
-        <img class="loading" src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif">
-        }
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ g.percent }}" aria-valuemin="0" aria-valuemax="100" ng-style="{width:  g.percent + '%'}">
+            {{ g.percent | number }}%
+          </div>
+        </div>
       </div>
       <div ng-repeat="result in g.results" ng-if="!g.loading && g.results.length">
         <h4 ng-click="g.selected = result">{{ result.ints | json}}</h4>
@@ -52,7 +54,7 @@
       <div ng-if="!g.loading && !g.results">Please run the things</div>
     </div>
   </div>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+<script src="angular.js"></script>
 <script src="ng.js"></script>
 <script src="calc-local.js"></script>
 </body>
