@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="calc">
+<head>
+  <title>Calculords Haaax</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <style type="text/css">
+  .loading img {
+    margin: auto;
+    width: 300px;
+  }
+  </style>
+</head>
+<body ng-controller="gaem as g">
+  <div class="container">
+    <h1>Calculords Haaax</h1>
+    <div class="row">
+      <form ng-submit="g.runLevel()">
+        <div class="row">
+          <div class="col-xs-6">
+            <label>Cards: <input ng-list="," ng-model="g.cards" class="cards"/></label>
+          </div>
+          <div class="col-xs-6">
+            <label>Nums: <input ng-list="," ng-model="g.nums" class="nums"/></label>
+          </div>
+        </div>
+        <div class="row">
+        <div class="col-xs-6">
+            {{ g.cards | json}}
+          </div>
+          <div class="col-xs-6">
+            {{ g.nums | json}}
+          </div>
+        </div>
+        <button class="btn calculate">Calculate</button>
+      </form>
+    </div>
+    <div class="row">
+      <h3>Results</h3>
+      <div ng-if="g.loading">
+        {{ g.percent | number }}% done
+        <img class="loading" src="https://d13yacurqjgara.cloudfront.net/users/82092/screenshots/1073359/spinner.gif">
+        }
+      </div>
+      <div ng-repeat="result in g.results" ng-if="!g.loading && g.results.length">
+        <h4 ng-click="g.selected = result">{{ result.ints | json}}</h4>
+        <button class="btn btn-warning" ng-click="g.useSolution(result)">Use this result</button>
+        <div ng-show="g.selected === result">
+          <div ng-repeat="s in result.stack">{{ s }}</div>
+        </div>
+      </div>
+      <div ng-if="!g.loading && g.results.length === 0">No results found</div>
+      <div ng-if="!g.loading && !g.results">Please run the things</div>
+    </div>
+  </div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+<script src="ng.js"></script>
+<script src="calc-local.js"></script>
+</body>
+</html>
