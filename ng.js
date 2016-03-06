@@ -1,11 +1,10 @@
-'use strict';
-
+/* globals angular*/
 angular.module('calc', [])
 .controller('gaem', function ($scope) {
   'use strict';
   let g = this;
-  g.cards = ['2','18','62'];
-  g.nums = ['8','4','3','2','5','6'];
+  g.cards = ['12','42','20','35','32'];
+  g.nums = ['3','4','6','7','5','7','3'];
 
 
   let completeWork = (e) => {

@@ -1,3 +1,5 @@
+/* global postMessage, onmessage */
+
 'use strict';
 
 // TODO: Show solutions that use lots of cards but don't use all numbers
@@ -41,55 +43,64 @@ function runLevel(cards, initInts) {
 
   function explore (stack, ints, isRoot) {
     // Base cases
-    let localCards = cards.slice(0);
-    let done = ints.every(input => {
-      let idx = localCards.indexOf(input);
-      if (idx !== -1) {
-        localCards.splice(idx, 1);
-        return true;
-      }
-      return false;
-    });
-    if (done) {
-      let sortedInts = ints.sort();
-      let alreadyFound = solutions.some(s => {
-        if (s.ints.length !== ints.length) { return false; }
-        return s.ints.sort().every((int, idx) => {
-          return int === sortedInts[idx];
-        });
+
+    if (ints.length <= cards.length) {
+      // We're done if all of the ints we have match (uniquely) cards
+      let localCards = cards.slice(0);
+      let done = ints.every(input => {
+        let idx = localCards.indexOf(input);
+        if (idx !== -1) {
+          localCards.splice(idx, 1);
+          return true;
+        }
+        return false;
       });
-      if (!alreadyFound) {
-        solutions.push({
-          stack: stack,
-          ints: ints
+
+      if (done) {
+        let sortedInts = ints.sort();
+        let alreadyFound = solutions.some(s => {
+          if (s.ints.length !== ints.length) { return false; }
+          return s.ints.sort().every((int, idx) => {
+            return int === sortedInts[idx];
+          });
         });
+        if (!alreadyFound) {
+          solutions.push({
+            stack: stack,
+            ints: ints
+          });
+        }
+        return;
       }
-      return;
     }
+
+    // We're done if we only have one number left (and it doesn't match a card)
     if (ints.length === 1) { return; }
-    if (stack.length > Math.pow(ints.length, 2)) { return; }
 
     // Search!
     for(let i = 0; i < ints.length; i++) {
+      let left = ints[i];
+      for (let j = i+1; j < ints.length; j++) {
+        let localInts = ints.slice(i+1);
+        let right = localInts.splice(j - i - 1, 1)[0];
+
+        for (let k = 0; k < operations.length; k++) {
+          let r = operations[k](left, right);
+          // console.log('ints', ints);
+          // console.log('localInts', localInts);
+          // console.log('l/r', left, right);
+          // console.log('i/j', i, j);
+          // console.log('r', r);
+
+          explore(stack.concat(r.str), localInts.concat(r.result));
+        }
+      }
+
       if (isRoot) {
         console.log(`${i} of ${ints.length} checked`);
         console.log(`${work} items of ${totalUnits} done`);
         incrementWork();
         postMessage(work / totalUnits);
-      }
-      for (let j = i+1; j < ints.length; j++) {
-        operations.forEach(operation => {
-          let localInputs = ints.slice(0);
-          let localStack = stack.slice(0);
-
-          let r = operation(ints[i], ints[j]);
-          localStack.push(r.str);
-          localInputs.splice(i, 1);
-          localInputs.splice(j-1, 1);
-          localInputs.push(r.result);
-
-          explore(localStack, localInputs);
-        });
       }
     }
   }
