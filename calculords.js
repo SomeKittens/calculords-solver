@@ -33,15 +33,8 @@ let operations = [(a, b) => {
 
 function runLevel(cards, initInts) {
   let solutions = [];
-  let totalUnits = initInts.reduce((a, b, idx) => a + (idx+1), 0);
-  let work = 0;
-  let counter = initInts.length;
-  let incrementWork = () => {
-    work += counter;
-    counter--;
-  };
 
-  function explore (stack, ints, isRoot) {
+  function explore (stack, ints) {
     // Base cases
 
     if (ints.length <= cards.length) {
@@ -78,34 +71,21 @@ function runLevel(cards, initInts) {
     if (ints.length === 1) { return; }
 
     // Search!
-    for(let i = 0; i < ints.length; i++) {
+    for (let i = 0; i < ints.length; i++) {
       let left = ints[i];
-      for (let j = i+1; j < ints.length; j++) {
-        let localInts = ints.slice(i+1);
-        let right = localInts.splice(j - i - 1, 1)[0];
-
+      let remaining = ints.slice(i+1);
+      while (remaining.length) {
+        let right = remaining.shift();
         for (let k = 0; k < operations.length; k++) {
           let r = operations[k](left, right);
-          // console.log('ints', ints);
-          // console.log('localInts', localInts);
-          // console.log('l/r', left, right);
-          // console.log('i/j', i, j);
-          // console.log('r', r);
 
-          explore(stack.concat(r.str), localInts.concat(r.result));
+          explore(stack.concat(r.str), remaining.concat(r.result));
         }
-      }
-
-      if (isRoot) {
-        console.log(`${i} of ${ints.length} checked`);
-        console.log(`${work} items of ${totalUnits} done`);
-        incrementWork();
-        postMessage(work / totalUnits);
       }
     }
   }
 
-  explore([], initInts, true);
+  explore([], initInts);
 
   return solutions;
 }
