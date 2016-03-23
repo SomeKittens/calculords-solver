@@ -26,10 +26,10 @@
         </div>
         <div class="row">
         <div class="col-xs-6">
-            {{ g.cards | json}}
+            {{ g.cards.sort() | json}} ({{ g.cards.length }})
           </div>
           <div class="col-xs-6">
-            {{ g.nums | json}}
+            {{ g.nums.sort() | json}} ({{ g.nums.length }})
           </div>
         </div>
         <button class="btn calculate">Calculate</button>
@@ -57,6 +57,6 @@
   </div>
 <script src="angular.js"></script>
 <script src="ng.js"></script>
-<script src="calc-local.js"></script>
+<script src="calculords.js"></script>
 </body>
 </html>
